@@ -7,12 +7,32 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import socket
 import threading
+from pathlib import Path
 
 hostip=''
 port=5555
 vUrl=''
 Driver=''
 binary=FirefoxBinary("D:\\Browsers\\FireFox\\firefox.exe")
+filename=Path("./paths.txt")
+FirefoxPath=''
+GeckoDriverPath=''
+if filename.exists():
+    file = open(filename,'r') 
+    paths=file.readlines() 
+    file.close()
+    FirefoxPath , GeckoDriverPath= paths
+    FirefoxPath=FirefoxPath.rstrip()
+    GeckoDriverPath=GeckoDriverPath.rstrip()
+else:
+    print("please provide the paths for firefox.exe and geckodriver.exe repectively using \ \ ")
+    FirefoxPath=input("firefox.exe path : ")
+    GeckoDriverPath=input("geckodriver.exe path")
+    file = open(filename,'w')
+    file.writelines([FirefoxPath+" \n",GeckoDriverPath+" \n"])
+    file.close()
+
+binary=FirefoxBinary(FirefoxPath)
 
 def sync(username,address):
     vtime=Driver.execute_script("return document.getElementById('movie_player').getCurrentTime()")
@@ -69,7 +89,7 @@ bType=input("Are you using Chrome or Firefox (selenium drivers  needed) c/f : ")
 uType=input("Are you the host y/n : ")
 
 if bType == 'f':
-   Driver=webdriver.Firefox(firefox_binary=binary, executable_path=r"D:\\My Files\Projects\\watch to py\\geckodriver.exe")
+   Driver=webdriver.Firefox(firefox_binary=binary, executable_path=GeckoDriverPath)
 elif bType=='c':
     Driver=webdriver.Chrome()
 else:
