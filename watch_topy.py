@@ -89,9 +89,42 @@ bType=input("Are you using Chrome or Firefox (selenium drivers  needed) c/f : ")
 uType=input("Are you the host y/n : ")
 
 if bType == 'f':
-   Driver=webdriver.Firefox(firefox_binary=binary, executable_path=GeckoDriverPath)
+    filename=Path("./paths.txt")
+    FirefoxPath=''
+    GeckoDriverPath=''
+    if filename.exists():
+        file = open(filename,'r') 
+        paths=file.readlines() 
+        file.close()
+        FirefoxPath , GeckoDriverPath= paths
+        FirefoxPath=FirefoxPath.rstrip()
+        GeckoDriverPath=GeckoDriverPath.rstrip()
+    else:
+        print("please provide the paths for firefox.exe and geckodriver.exe respectively using \ \ ")
+        FirefoxPath=input("firefox.exe path : ")
+        GeckoDriverPath=input("geckodriver.exe path")
+        file = open(filename,'w')
+        file.writelines([FirefoxPath+" \n",GeckoDriverPath+" \n"])
+        file.close()
+
+    binary=FirefoxBinary(FirefoxPath)
+    Driver=webdriver.Firefox(firefox_binary=binary, executable_path=GeckoDriverPath)
 elif bType=='c':
-    Driver=webdriver.Chrome()
+    filename=Path("./Cpaths.txt")
+    ChromeDriver=''
+    if filename.exists():
+        file = open(filename,'r') 
+        paths=file.readline() 
+        file.close()
+        ChromeDriver= paths
+        ChromeDriver=ChromeDriver.rstrip()
+    else:
+        print("please provide the paths for firefox.exe and geckodriver.exe respectively using \ \ ")
+        ChromeDriver=input("ChromeDriver.exe path : ")
+        file = open(filename,'w')
+        file.writeline(ChromeDriver+" \n")
+        file.close()
+    Driver=webdriver.Chrome(ChromeDriver)
 else:
     print('???')
 
