@@ -158,7 +158,7 @@ else:
                     joined=True
                 else:
                     #send request to sync with host , response should be host current time
-                    time.sleep(10) #interval between each sync
+                    time.sleep(7) #interval between each sync
                     req='{}-{}'.format("sync",username)
                     s.sendall(req.encode('utf-8'))
                     re = s.recv(1024)
