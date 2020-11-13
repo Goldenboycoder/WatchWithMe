@@ -107,7 +107,7 @@ elif bType=='c':
         ChromeDriver= paths
         ChromeDriver=ChromeDriver.rstrip()
     else:
-        print("please provide the paths for firefox.exe and geckodriver.exe respectively using \ \ ")
+        print("please provide the paths for ChromeDriver.exe using \ \ ")
         ChromeDriver=input("ChromeDriver.exe path : ")
         file = open(filename,'w')
         file.writeline(ChromeDriver+" \n")
