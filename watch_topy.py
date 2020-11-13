@@ -53,6 +53,7 @@ def getIp():
             s.connect( ( internetHost, internetHostport ) )
             ip = s.getsockname()[0]
             s.close()
+            print(ip)
             return ip
         except :
             return False
