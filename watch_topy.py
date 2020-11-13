@@ -13,7 +13,6 @@ hostip=''
 port=5555
 vUrl=''
 Driver=''
-binary=FirefoxBinary("D:\\Browsers\\FireFox\\firefox.exe")
 filename=Path("./paths.txt")
 FirefoxPath=''
 GeckoDriverPath=''
@@ -25,7 +24,7 @@ if filename.exists():
     FirefoxPath=FirefoxPath.rstrip()
     GeckoDriverPath=GeckoDriverPath.rstrip()
 else:
-    print("please provide the paths for firefox.exe and geckodriver.exe repectively using \ \ ")
+    print("please provide the paths for firefox.exe and geckodriver.exe respectively using \ \ ")
     FirefoxPath=input("firefox.exe path : ")
     GeckoDriverPath=input("geckodriver.exe path")
     file = open(filename,'w')
@@ -143,17 +142,3 @@ else:
     except Exception as e:
         print(e)
 
-
-    
-
-
-
-'''
-Driver.get(vUrl)
-Driver.execute_script('document.getElementsByTagName("video")[0].currentTime')
-time.sleep(5)
-ctime=Driver.execute_script("return document.getElementById('movie_player').getCurrentTime()")
-print("Video is at : {}".format(ctime))
-#to change time
-Driver.execute_script('document.getElementsByTagName("video")[0].currentTime+=30')
-'''
