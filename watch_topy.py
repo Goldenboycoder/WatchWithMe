@@ -13,33 +13,17 @@ hostip=''
 port=5555
 vUrl=''
 Driver=''
-filename=Path("./paths.txt")
-FirefoxPath=''
-GeckoDriverPath=''
-if filename.exists():
-    file = open(filename,'r') 
-    paths=file.readlines() 
-    file.close()
-    FirefoxPath , GeckoDriverPath= paths
-    FirefoxPath=FirefoxPath.rstrip()
-    GeckoDriverPath=GeckoDriverPath.rstrip()
-else:
-    print("please provide the paths for firefox.exe and geckodriver.exe respectively using \ \ ")
-    FirefoxPath=input("firefox.exe path : ")
-    GeckoDriverPath=input("geckodriver.exe path")
-    file = open(filename,'w')
-    file.writelines([FirefoxPath+" \n",GeckoDriverPath+" \n"])
-    file.close()
 
-binary=FirefoxBinary(FirefoxPath)
 
 def sync(username,address):
+    #sync with client by sending the current time
     vtime=Driver.execute_script("return document.getElementById('movie_player').getCurrentTime()")
     print("syncing with ",username)
     return vtime
 
 
 def join(user,address):
+    #provided new users with the video link
     print(user," joined")
     return vUrl
 
@@ -59,6 +43,7 @@ def getIp():
             return False
 
 def handleConnection(connection,address):
+    #handles client coonections and respond to requests according to the Protocol
     with connection:
         print('Connected by {}'.format(address))
         while True:
@@ -69,13 +54,16 @@ def handleConnection(connection,address):
             connection.sendall(str(response).encode('utf-8'))
 
 def openYT(Driver,url):
+    #open url
     Driver.get(url)
 
 def syncYT(Driver,htime):
+    #sync client current time with the host
     plus='+='
     mminus='-='
     seek=''
     ctime=Driver.execute_script("return document.getElementById('movie_player').getCurrentTime()")
+    #calculate time difference 
     res= float(htime)-float(ctime)
     if res > 0:
         seek=plus+str(abs(res))
@@ -86,7 +74,7 @@ def syncYT(Driver,htime):
 
 print("Welcome to watch together")
 bType=input("Are you using Chrome or Firefox (selenium drivers  needed) c/f : ")
-uType=input("Are you the host y/n : ")
+
 
 if bType == 'f':
     filename=Path("./paths.txt")
@@ -128,6 +116,8 @@ elif bType=='c':
 else:
     print('???')
 
+uType=input("Are you the host y/n : ")
+
 if uType == 'y' :
     ip=False
     while not ip :
@@ -146,7 +136,6 @@ if uType == 'y' :
             while True:
                 connection , address = s.accept()
                 thred=threading.Thread(target=handleConnection,args=[connection , address],daemon=True)
-                #uses daemon thread to be able to test, in real application proccess will keep running in background after program closes
                 thred.start()
                 print(Driver.execute_script("return document.getElementById('movie_player').getCurrentTime()"))
     except Exception as e:
@@ -161,13 +150,15 @@ else:
             joined=False
             while True:
                 if not joined :
+                    #send a join request , response should be a url
                     req='{}-{}'.format("join",username)
                     s.sendall(req.encode('utf-8'))
                     re = s.recv(1024).decode('utf-8')
                     openYT(Driver,re)
                     joined=True
                 else:
-                    time.sleep(10)
+                    #send request to sync with host , response should be host current time
+                    time.sleep(10) #interval between each sync
                     req='{}-{}'.format("sync",username)
                     s.sendall(req.encode('utf-8'))
                     re = s.recv(1024)
